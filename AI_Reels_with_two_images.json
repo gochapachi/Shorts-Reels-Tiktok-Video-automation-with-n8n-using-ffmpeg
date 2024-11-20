@@ -1,0 +1,852 @@
+{
+  "name": "AI Reels with two images",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1txKgnUUxruBCQ2UIJBAZh17baND8dSVZ",
+          "mode": "list",
+          "cachedResultName": "brand creative test.png",
+          "cachedResultUrl": "https://drive.google.com/file/d/1txKgnUUxruBCQ2UIJBAZh17baND8dSVZ/view?usp=drivesdk"
+        },
+        "options": {
+          "binaryPropertyName": "Fore-Ground"
+        }
+      },
+      "id": "61c9d432-a369-4fc8-a35e-f344a178b595",
+      "name": "Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        280,
+        320
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "WhV7r3vgZjAUInMe",
+          "name": "anagataitsolutions@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "inputs",
+              "value": "=Depict  {{ $json.output['Image Prompt'] || $json.output[0]['Image Prompt'] }}"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 10000
+            }
+          }
+        }
+      },
+      "id": "a576a5a4-a12d-437d-b130-862c14f19e44",
+      "name": "Call hugginface inference api",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        280,
+        500
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "IduidJPjiVVfP8er",
+          "name": "Header Auth account"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "notes": " "
+    },
+    {
+      "parameters": {
+        "operation": "composite",
+        "dataPropertyNameComposite": "Fore-Ground",
+        "options": {}
+      },
+      "id": "c28ef36f-6a60-4fae-b32b-141a28594d6a",
+      "name": "Edit Image",
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        920,
+        480
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "b5e51d6a-3ddd-4a97-a193-a8799fa3fddd",
+      "name": "Wikipedia",
+      "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "text": "={{ $json.output.Tip }} {{ $json.output['Did You Know Fact'] }}",
+        "fontSize": 30,
+        "positionX": 220,
+        "positionY": 630,
+        "lineLength": 45,
+        "options": {
+          "font": "/usr/share/fonts/truetype/msttcorefonts/Comic_Sans_MS.ttf"
+        }
+      },
+      "id": "10cd14b6-4260-4539-b4b0-a6c7c31f2830",
+      "name": "Edit Image1",
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        1140,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "text": "Call : 9026019566   Whatsapp : 8400210108   Website: anagataitsolutions.com",
+        "fontSize": 24,
+        "positionX": 80,
+        "positionY": 1010,
+        "options": {
+          "font": "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf",
+          "format": "png"
+        }
+      },
+      "id": "7826b598-7ec6-4a8a-bc2b-52b5900ce654",
+      "name": "Edit Image2",
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "name": "=Anagata Tip of the Day {{ $now }}.png",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1Z3krfd0QE5w4-aTfLRxekCqDls_LUfop",
+          "mode": "list",
+          "cachedResultName": "Tip of the day",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1Z3krfd0QE5w4-aTfLRxekCqDls_LUfop"
+        },
+        "options": {}
+      },
+      "id": "244ac622-5ec4-4624-a05a-594bcbb4c65b",
+      "name": "Google Drive1",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1780,
+        480
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "WhV7r3vgZjAUInMe",
+          "name": "anagataitsolutions@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "id": "1e84836c-de29-49bf-b0f7-11465ff7474f",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        700,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "blur",
+        "sigma": 4,
+        "options": {}
+      },
+      "id": "40a42206-8737-40dd-880d-ab0a5ec1b083",
+      "name": "Edit Image3",
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        520,
+        460
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "ba733db6-c93b-4f19-a6c3-370617c7e0bc",
+      "name": "Auto-fixing Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+      "typeVersion": 1,
+      "position": [
+        -20,
+        740
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "ef3db062-f4c6-414c-8830-ddf93429ce41",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -540,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "id": "8f1fac4b-0968-4eea-9a31-027c6ac44e20",
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        760,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"Topic\": \"Customer Support\",\n  \"Tip\": \"Customer Support me Automation se aap 30% tak salary cost bacha sakte hai.\",\n  \"Image Prompt\": \"A bustling Indian customer support call center with agents working at desks, speaking on headsets. The scene is vibrant and professional, showing a mix of technology and busy employees managing customer queries.\"\n}\n"
+      },
+      "id": "d56a6655-7c72-4fbf-b1d2-ef7cfebc8d9b",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "frequencyPenalty": 0.2,
+          "temperature": 0.7
+        }
+      },
+      "id": "f382ae72-82b3-4c1b-bf2c-61658ddcbbde",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        -440,
+        820
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "LXvPX9OIrJ2MjmDy",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "frequencyPenalty": 0.2,
+          "temperature": 0.7
+        }
+      },
+      "id": "18c2c753-c0ab-4931-a9a0-3e3d673a2bfd",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        960
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "LXvPX9OIrJ2MjmDy",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1C1D-Md8fNZBveebGWd6w09l2oyj2M_XQ",
+          "mode": "list",
+          "cachedResultName": "farzi_paisa_bgm.mp3",
+          "cachedResultUrl": "https://drive.google.com/file/d/1C1D-Md8fNZBveebGWd6w09l2oyj2M_XQ/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "id": "ded496e8-84f6-4bd7-a656-855653ecacc4",
+      "name": "Google Drive2",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1980,
+        480
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "WhV7r3vgZjAUInMe",
+          "name": "anagataitsolutions@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "destinationPath": "/home/node/n8n_storage/reel_audio",
+        "hashFilenames": false
+      },
+      "id": "224b0c04-60a8-4204-97cd-eb0a07c56cac",
+      "name": "Store Files",
+      "type": "n8n-nodes-auto-file-storer.autoFileStorer",
+      "typeVersion": 1,
+      "position": [
+        2200,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "destinationPath": "/home/node/n8n_storage/reel_audio",
+        "hashFilenames": false
+      },
+      "id": "8733cb81-4ea4-4b71-b428-0163191d3b10",
+      "name": "Store Files1",
+      "type": "n8n-nodes-auto-file-storer.autoFileStorer",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {}
+      },
+      "id": "30b2d9e2-a6fb-42e3-9220-8112d70cecc3",
+      "name": "OpenAI Chat Model2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        2780,
+        760
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "LXvPX9OIrJ2MjmDy",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $json.output.output_video }}",
+        "options": {}
+      },
+      "id": "e9a260c9-4836-4383-b2da-0bbada5f418e",
+      "name": "Read/Write Files from Disk",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        3680,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "\"Create 1 ‘Did You Know?’ Instagram post idea for Anagata IT Solutions in an urban Hinglish style. Post should include a fun fact about how automation can help businesses improve productivity, efficiency, or customer engagement. Each post should have a short, catchy fact(you can use wikipedia to get information) written in Hinglish (mix of Hindi and English). Also, include an Image Prompt for each post.\n\nFor example:\n\nPost Topic: Automated Billing\nDid You Know Fact: \"Kya Apko pata hai? Automated billing se aapka time 30% bach sakta hai, aur payments time par milte hain!\"\nImage Prompt: \"A clean and modern digital illustration showing an automated billing process. A cheerful business owner with black hair and glasses is seated at a stylish office desk, looking at a computer screen displaying automated invoices being sent to customers. The background features a large window with sunlight streaming in, plants, and a wall clock showing punctuality.\"\n\nPost Topic: Website Speed Optimization\nDid You Know Fact: \"Kya aapko pata hai? Website ki speed ko optimize karne se conversions 20% tak badh sakti hain, aur is process ko automate bhi kar sakte ho!\"\nImage Prompt:A clean and modern digital illustration showing Before-and-after of a slow website vs. an optimized, fast-loading website.\nGive output in JSON format\n{\nPost Topic:\nDid You Know Fact:\nImage Prompt:}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a helpful assistant of Anagata IT Solutions.\nCompany Overview: Anagata IT Solutions specializes in advanced automation solutions for businesses, focusing on streamlining processes, enhancing efficiency, and driving growth using state-of-the-art tools and technologies.\n\nTarget Audience: The company serves Micro, Small, and Medium Enterprises (MSMEs) across India.\n\nServices Offered:\n\nMarketing Automation\nCRM and Sales Automation\nCustomer Support Solutions\nFinancial Process Automation\nOperations and Supply Chain Management\nIT and System Integration\nCore Values: Anagata emphasizes innovation, reliability, and client satisfaction.\n\nTeam Composition: The current team includes Sanjeev Kumar Singh, who is the founder.\n\nHiring Needs: Anagata IT Solutions is looking for a co-founder, as well as sales and developers to join the team.\n\nWebsite: The company's website is hosted at ai.anagataitsolutions.com.\n\nSocial Media Strategy: Anagata IT Solutions has indicated challenges with posting BTS and case studies daily on social media.\n\nBrand Promotion: The company is currently focusing on outreach to real estate agents through cold calls and bulk WhatsApp promotional messages to quickly close their first customer.\n\nFinancial Goals: Anagata IT Solutions needs to earn 15k in the next two days and is looking for a suitable offer or package.\n\nContent Creation: Anagata IT Solutions is creating a YouTube channel named Gochapachi, with a series called 'Business with Gochapachi,' aimed at teaching MSMEs how to leverage technology.\n\nWebsite Development: Anagata IT Solutions is using WordPress, Elementor, Elementor Pro, and ElementsKit to build a professional website focused on IT solutions for MSMEs. They want to include animations and custom illustrations.\n\nAutomation Tools: Anagata IT Solutions is using n8n for automating processes with WhatsApp and Airtable as a buffer for incoming messages.\n\nCurrent Projects: They are also creating an online blog page on Indian Law.\n\nTechnical Setup: Anagata IT Solutions is operating within a Docker container and has installed Twenty CRM for the company.\n\nCommunity Issues: Anagata IT Solutions is addressing a local issue in Lucknow related to public cleanliness due to pan masala disposal."
+        }
+      },
+      "id": "12ea019f-2fe6-4cf2-b5e0-7a5a439ae94c",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        -320,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=ffmpeg -loop 1 -i /home/node/n8n_storage/reel_audio/FLUX.png -loop 1 -i /home/node/n8n_storage/reel_audio/119.jpg -i /home/node/n8n_storage/reel_audio/81761fae445deda654cc619e6c76caa8.mp3 \\\n-filter_complex \"[0:v]trim=duration=5[img1]; \\\n[1:v]trim=duration=5[img2]; \\\n[img1][img2]xfade=transition=slideleft:duration=2:offset=2,format=yuv420p[video]; \\\n[video]setpts=PTS-STARTPTS[v];[2:a]aresample=async=1[a]\" \\\n-map \"[v]\" -map \"[a]\" -shortest -r 30 /home/node/n8n_storage/reel_audio/Reel_{{ $now }}.mp4"
+      },
+      "id": "27d9b65c-6504-411e-b08c-232dca0fb964",
+      "name": "Execute Command",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        3100,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.stderr }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "input_image",
+              "description": "location of input image"
+            },
+            {
+              "name": "input_audio",
+              "description": "Location of input audio"
+            },
+            {
+              "name": "output_video",
+              "description": "Location of output video"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "057d3a78-0a10-4af2-a876-b67252f78ff1",
+      "name": "Information Extractor",
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1,
+      "position": [
+        3320,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "097ff5f8-ff14-49e8-89c7-041dfcbc99cf",
+      "name": "OpenAI Chat Model3",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        3560,
+        780
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "LXvPX9OIrJ2MjmDy",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1kEtw6qnWoSLqjea9ZCNiPgwz1StevpZw",
+          "mode": "list",
+          "cachedResultName": "119.jpg",
+          "cachedResultUrl": "https://drive.google.com/file/d/1kEtw6qnWoSLqjea9ZCNiPgwz1StevpZw/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "id": "4bd8bfbd-d64a-449c-8368-97cce901eb37",
+      "name": "Google Drive3",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2420,
+        480
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "WhV7r3vgZjAUInMe",
+          "name": "anagataitsolutions@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "destinationPath": "/home/node/n8n_storage/reel_audio",
+        "hashFilenames": false
+      },
+      "id": "b2f552e6-2303-4216-86b7-bac422e033e3",
+      "name": "Store Files2",
+      "type": "n8n-nodes-auto-file-storer.autoFileStorer",
+      "typeVersion": 1,
+      "position": [
+        2640,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "directoryPath": "/home/node/n8n_storage/reel_audio"
+      },
+      "id": "14328a45-7450-4949-8875-7fef1fcb237a",
+      "name": "Explore Stored Files",
+      "type": "n8n-nodes-auto-file-storer.autoFileStorerExplorer",
+      "typeVersion": 1,
+      "position": [
+        2860,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "command": "ffmpeg -loop 1 -i base_image.png -loop 1 -i popup_image.png -i audio.mp3 \\\n-filter_complex \"[0:v][1:v]overlay=(W-w)/2:(H-h)/2:enable='between(t,1,3)'[popup]; \\\n[popup]fade=out:st=3:d=1[video]\" \\\n-map \"[video]\" -map 2:a -shortest -r 30 output.mp4\n"
+      },
+      "id": "ef7316da-0eaa-443e-92da-75a62b41c00e",
+      "name": "Execute Command1",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        3080,
+        800
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call hugginface inference api": {
+      "main": [
+        [
+          {
+            "node": "Edit Image3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Image": {
+      "main": [
+        [
+          {
+            "node": "Edit Image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wikipedia": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Image1": {
+      "main": [
+        [
+          {
+            "node": "Edit Image2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Image2": {
+      "main": [
+        [
+          {
+            "node": "Store Files1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Image3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Auto-fixing Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Edit Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive2": {
+      "main": [
+        [
+          {
+            "node": "Store Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Files": {
+      "main": [
+        [
+          {
+            "node": "Google Drive3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Files1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Call hugginface inference api",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive3": {
+      "main": [
+        [
+          {
+            "node": "Store Files2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Files2": {
+      "main": [
+        [
+          {
+            "node": "Explore Stored Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Explore Stored Files": {
+      "main": [
+        [
+          {
+            "node": "Execute Command",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Execute Command1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6c26fc47-f130-4c1c-b225-0b80f9f47465",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d2c84e93c4017c0e6965678cf632c83351c3468bd86db747267097886d3f4b16"
+  },
+  "id": "8v5KvlesvF18lQBT",
+  "tags": []
+}
